@@ -1,2 +1,3 @@
 data/raw/*.csv
 data/processed/*
+data/raw/.cache/
