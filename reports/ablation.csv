@@ -1,0 +1,9 @@
+model,feature_set,add_ratios,class_weight,val_precision_macro,val_recall_macro,val_f1_macro,val_roc_auc_ovr_macro,val_baseline_f1_macro
+hist_gradient_boosting,core,True,balanced,0.4759,0.5155,0.4581,0.6496,0.2354
+hist_gradient_boosting,core,False,balanced,0.4771,0.5165,0.4579,0.6507,0.2354
+hist_gradient_boosting,with_scoring,True,balanced,0.4937,0.527,0.4546,0.6492,0.2354
+hist_gradient_boosting,with_scoring,False,balanced,0.4552,0.5269,0.4544,0.6488,0.2354
+hist_gradient_boosting,with_scoring,True,,0.5663,0.5271,0.4544,0.674,0.2354
+hist_gradient_boosting,with_scoring,False,,0.4552,0.527,0.4543,0.6748,0.2354
+hist_gradient_boosting,core,True,,0.5037,0.5088,0.4439,0.6733,0.2354
+hist_gradient_boosting,core,False,,0.5131,0.509,0.4438,0.6734,0.2354

@@ -1,0 +1,37 @@
+{
+  "test_accuracy": 0.63092,
+  "test_precision_macro": 0.4643892116282813,
+  "test_recall_macro": 0.5118919403822508,
+  "test_f1_macro": 0.4454969705163303,
+  "test_roc_auc_ovr_macro": 0.6752842028907637,
+  "test_precision_low": 0.6841264503110812,
+  "test_recall_low": 0.8945362600315145,
+  "test_f1_low": 0.775309269346207,
+  "test_roc_auc_low": 0.7174478206765422,
+  "test_precision_medium": 0.21052631578947367,
+  "test_recall_medium": 0.00017267429311461257,
+  "test_f1_medium": 0.0003450655624568668,
+  "test_roc_auc_medium": 0.5596434492715398,
+  "test_precision_high": 0.4985148687842891,
+  "test_recall_high": 0.6409668868221233,
+  "test_f1_high": 0.560836576640327,
+  "test_roc_auc_high": 0.748761338724209,
+  "test_baseline_f1_macro": 0.23538494050468586,
+  "confusion_matrix": [
+    [
+      48822,
+      5,
+      5751
+    ],
+    [
+      14561,
+      4,
+      8600
+    ],
+    [
+      7981,
+      10,
+      14266
+    ]
+  ]
+}
