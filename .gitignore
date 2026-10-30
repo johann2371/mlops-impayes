@@ -1,3 +1,9 @@
 data/raw/*.csv
 data/processed/*
 data/raw/.cache/
+
+# Artefacts d'entrainement (tache 5)
+/mlflow.db
+/mlruns/
+/mlartifacts/
+/models/
