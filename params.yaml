@@ -1,0 +1,18 @@
+data:
+  raw_path: data/raw/telecom_credit_scoring_data.csv
+  sample_path: data/raw/sample.csv
+  target: default_risk
+  test_size: 0.2
+  seed: 42
+
+model:
+  path: models/model.joblib
+  version: "fake-0.1"
+
+api:
+  log_path: logs/predictions.jsonl
+
+thresholds:
+  f1_macro_min: 0.80
+  latency_p95_ms: 300
+  psi_max: 0.2
