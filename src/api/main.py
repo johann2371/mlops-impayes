@@ -2,7 +2,6 @@ import json
 import time
 from datetime import datetime, timezone
 
-
 import numpy as np
 import pandas as pd
 from fastapi import FastAPI
@@ -12,8 +11,11 @@ from src.config import ROOT, params
 
 app = FastAPI(title="API de prédiction du risque d'impayé", version="0.1.0")
 
-MODEL_VERSION = params["model"]["version"]
+MODEL_VERSION = params["api"]["model_version"]
 LOG_PATH = ROOT / params["api"]["log_path"]
+
+# Le vrai modèle prédit des codes (0, 1, 2), l'API renvoie des libellés.
+LABELS = {0: "low", 1: "medium", 2: "high"}
 
 
 class FakeModel:
@@ -27,7 +29,7 @@ class FakeModel:
 
 
 def load_model():
-    path = ROOT / params["model"]["path"]
+    path = ROOT / params["outputs"]["model_path"]
     if path.exists():
         import joblib
 
@@ -36,6 +38,14 @@ def load_model():
 
 
 model = load_model()
+
+
+def class_label(code) -> str:
+    """Convertit une classe du modèle (code ou texte) en libellé."""
+    try:
+        return LABELS[int(code)]
+    except (ValueError, KeyError):
+        return str(code)
 
 
 def log_prediction(entry: dict) -> None:
@@ -54,7 +64,7 @@ def predict(request: PredictionRequest):
     start = time.perf_counter()
     df = pd.DataFrame([request.model_dump()])
     proba = model.predict_proba(df)[0]
-    classes = [str(c) for c in model.classes_]
+    classes = [class_label(c) for c in model.classes_]
     probabilities = {c: round(float(p), 4) for c, p in zip(classes, proba)}
     prediction = max(probabilities, key=probabilities.get)
 
