@@ -1,0 +1,47 @@
+name: CT
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [drift-detected]
+  schedule:
+    - cron: "0 3 * * 1"
+  pull_request:
+    paths:
+      - ".github/workflows/ct.yml"
+      - "src/models/**"
+      - "src/features/**"
+      - "params.yaml"
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Télécharger les données
+        run: python -m src.data.ingest
+
+      - name: Entraîner le modèle (jeu complet)
+        run: python -m src.models.train
+
+      - name: Valider le modèle
+        run: python -m src.models.validate_model
+
+      - name: Publier le modèle validé
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-${{ github.run_number }}
+          path: |
+            models/
+            reports/metrics.json
+            reports/figures/confusion_matrix.png
+          retention-days: 30
