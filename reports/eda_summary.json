@@ -1,0 +1,46 @@
+{
+  "fichier": "telecom.csv",
+  "lignes": 500000,
+  "colonnes": 15,
+  "cible": "default_risk",
+  "classes": [
+    "high",
+    "low",
+    "medium"
+  ],
+  "cible_binaire": false,
+  "proportions_classes": {
+    "low": 0.5458,
+    "medium": 0.2316,
+    "high": 0.2226
+  },
+  "rapport_majoritaire_minoritaire": 2.45,
+  "doublons": 0,
+  "colonnes_constantes": [
+    "assessment_date"
+  ],
+  "colonnes_identifiants": [
+    "customer_id",
+    "phone_number"
+  ],
+  "numeriques": [
+    "credit_score",
+    "tenure_months",
+    "avg_monthly_spend_ngn",
+    "recharge_frequency_per_month",
+    "payment_consistency_score",
+    "late_payment_count",
+    "max_loan_amount_ngn"
+  ],
+  "categorielles": [
+    "operator",
+    "credit_rating",
+    "account_type"
+  ],
+  "booleennes": [
+    "loan_eligibility"
+  ],
+  "colonnes_avec_manquants": [],
+  "paires_correlees_0.8": [],
+  "variables_a_examiner_fuite": []
+}

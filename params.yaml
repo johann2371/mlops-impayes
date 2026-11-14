@@ -1,10 +1,11 @@
-# Paramètres de l'entraînement (tâche 5). Un seul endroit pour les choix :
+# Paramètres de l'entraînement (tâche 5) et de l'API. Un seul endroit pour les choix :
 # toute modification ici change le run MLflow suivant.
 seed: 42
 
 data:
   # Nom du fichier suivi par DVC (data/raw/*.dvc). Surchargeable avec --data.
   raw_path: data/raw/telecom_credit_scoring_data.csv
+  sample_path: data/raw/sample.csv
   test_size: 0.2          # jeu de test, touché une seule fois (run final)
   validation_size: 0.2    # part du train réservée à la comparaison (ablation)
   sample_frac: null       # ex. 0.1 pour un essai rapide ; null = tout le jeu
@@ -35,3 +36,12 @@ outputs:
   metrics_path: reports/metrics.json
   confusion_matrix_path: reports/figures/confusion_matrix.png
   ablation_path: reports/ablation.csv
+
+api:
+  model_version: "0.1.0"
+  log_path: logs/predictions.jsonl
+
+thresholds:
+  f1_macro_min: 0.80
+  latency_p95_ms: 300
+  psi_max: 0.2

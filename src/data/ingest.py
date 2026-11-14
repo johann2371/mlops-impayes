@@ -5,6 +5,7 @@ Usage :
     python -m src.data.ingest --force      # retélécharge même s'il existe
     python -m src.data.ingest --sample     # crée aussi un échantillon de 5 000 lignes
 """
+
 import argparse
 from pathlib import Path
 
@@ -58,9 +59,7 @@ def main(force: bool = False, sample: bool = False) -> None:
     check(df)
 
     if sample:
-        df.sample(n=min(SAMPLE_SIZE, len(df)), random_state=SEED).to_csv(
-            SAMPLE_FILE, index=False
-        )
+        df.sample(n=min(SAMPLE_SIZE, len(df)), random_state=SEED).to_csv(SAMPLE_FILE, index=False)
         print(f"Échantillon enregistré : {SAMPLE_FILE}")
 
 

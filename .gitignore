@@ -1,9 +1,16 @@
 data/raw/*.csv
 data/processed/*
 data/raw/.cache/
+logs/
 
 # Artefacts d'entrainement (tache 5)
 /mlflow.db
 /mlruns/
 /mlartifacts/
 /models/
+
+# Python et environnement
+.venv/
+__pycache__/
+*.pyc
+.env
