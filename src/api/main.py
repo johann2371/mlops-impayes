@@ -11,15 +11,14 @@ from src.config import ROOT, params
 
 app = FastAPI(title="API de prédiction du risque d'impayé", version="0.1.0")
 
-MODEL_VERSION = params["api"]["model_version"]
 LOG_PATH = ROOT / params["api"]["log_path"]
 
-# Le vrai modèle prédit des codes (0, 1, 2), l'API renvoie des libellés.
+# Le vrai modèle peut prédire des codes (0, 1, 2), l'API renvoie des libellés.
 LABELS = {0: "low", 1: "medium", 2: "high"}
 
 
 class FakeModel:
-    """Modèle factice, remplacé par le vrai modèle une fois entraîné."""
+    """Modèle factice, utilisé seulement si aucun modèle n'a été entraîné."""
 
     classes_ = ["low", "medium", "high"]
 
@@ -37,7 +36,24 @@ def load_model():
     return FakeModel()
 
 
+def load_meta() -> dict:
+    path = ROOT / params["outputs"]["model_meta_path"]
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {}
+
+
+def compute_version(meta: dict) -> str:
+    """Identifie le modèle : algorithme, jeu de variables, date d'entraînement."""
+    if not meta:
+        return "fake-model"
+    stamp = meta["trained_at"][:19].replace("-", "").replace(":", "").replace("T", "-")
+    return f"{meta['model']}-{meta['feature_set']}-{stamp}"
+
+
 model = load_model()
+meta = load_meta()
+MODEL_VERSION = compute_version(meta)
 
 
 def class_label(code) -> str:
