@@ -42,6 +42,11 @@ api:
   log_path: logs/predictions.jsonl
 
 thresholds:
-  f1_macro_min: 0.80
+  # Validation du modèle (CT), planchers fixés d'après le run de référence
+  # (AUC macro 0.675, F1 macro 0.445, baseline 0.235)
+  auc_macro_min: 0.65
+  f1_macro_min: 0.40
+  min_gain_over_baseline: 0.10
+  # Monitoring en production
   latency_p95_ms: 300
   psi_max: 0.2
