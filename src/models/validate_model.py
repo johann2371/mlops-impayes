@@ -4,6 +4,7 @@ Usage :
     python -m src.models.validate_model
 Code de sortie 0 si le modèle est valide, 1 sinon.
 """
+
 import json
 import os
 import sys
