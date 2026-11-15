@@ -1,0 +1,69 @@
+schema: '2.0'
+stages:
+  validate:
+    cmd: python -m src.data.validate
+    deps:
+    - path: data/raw/telecom_credit_scoring_data.csv
+      hash: md5
+      md5: 4a2e876491f045d2b8349ed3941efc21
+      size: 50926326
+    - path: src/data/validate.py
+      hash: md5
+      md5: e8056ddad7dde396aa429530bbd50068
+      size: 4209
+  train:
+    cmd: python -m src.models.train
+    deps:
+    - path: data/raw/telecom_credit_scoring_data.csv
+      hash: md5
+      md5: 4a2e876491f045d2b8349ed3941efc21
+      size: 50926326
+    - path: src/features
+      hash: md5
+      md5: cf5bc0bb76eb625b763440b80199ac96.dir
+      size: 22195
+      nfiles: 4
+    - path: src/models
+      hash: md5
+      md5: 2ec70ddc518b8166e26e597aa3416b91.dir
+      size: 63016
+      nfiles: 9
+    params:
+      params.yaml:
+        data:
+          raw_path: data/raw/telecom_credit_scoring_data.csv
+          sample_path: data/raw/sample.csv
+          test_size: 0.2
+          validation_size: 0.2
+          sample_frac:
+        features:
+          feature_set: core
+          add_ratios: false
+        model:
+          name: hist_gradient_boosting
+          class_weight:
+          hist_gradient_boosting:
+            max_iter: 200
+            learning_rate: 0.1
+            max_depth:
+          logistic_regression:
+            C: 1.0
+            max_iter: 300
+        seed: 42
+    outs:
+    - path: models/model.joblib
+      hash: md5
+      md5: b1f68157f52104f5c5ed2526c72be9fe
+      size: 448714
+    - path: models/model_meta.json
+      hash: md5
+      md5: a84840cc3e13d317ad6f28ed41b0080c
+      size: 629
+    - path: reports/figures/confusion_matrix.png
+      hash: md5
+      md5: f58fdf718a93ef05f019728d74ed85cd
+      size: 26899
+    - path: reports/metrics.json
+      hash: md5
+      md5: 330d96896614babe76de007f2f05e2ea
+      size: 971

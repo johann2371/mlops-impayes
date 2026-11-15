@@ -1,0 +1,27 @@
+stages:
+  validate:
+    cmd: python -m src.data.validate
+    deps:
+      - data/raw/telecom_credit_scoring_data.csv
+      - src/data/validate.py
+
+  train:
+    cmd: python -m src.models.train
+    deps:
+      - data/raw/telecom_credit_scoring_data.csv
+      - src/models
+      - src/features
+    params:
+      - seed
+      - data
+      - features
+      - model
+    outs:
+      - models/model.joblib:
+          cache: false
+      - models/model_meta.json:
+          cache: false
+      - reports/metrics.json:
+          cache: false
+      - reports/figures/confusion_matrix.png:
+          cache: false
