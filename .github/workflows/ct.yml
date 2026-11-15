@@ -30,6 +30,9 @@ jobs:
       - name: Télécharger les données
         run: python -m src.data.ingest
 
+      - name: Valider les données
+        run: python -m src.data.validate
+
       - name: Entraîner le modèle (jeu complet)
         run: python -m src.models.train
 
