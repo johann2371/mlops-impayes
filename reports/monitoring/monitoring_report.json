@@ -1,0 +1,303 @@
+{
+  "generated_at": "2026-11-15T07:34:50.651132+00:00",
+  "model": {
+    "name": "impayes-telecom-model",
+    "version": "1",
+    "run_id": "19ae63eda9f74a8db0ec0421abf16036"
+  },
+  "baseline": {
+    "f1_macro": 0.4454969705163303,
+    "roc_auc_ovr_macro": 0.6752842028907637
+  },
+  "thresholds": {
+    "psi_warning": 0.1,
+    "psi_critical": 0.25,
+    "drop_warning": 0.03,
+    "drop_critical": 0.05,
+    "min_critical_features": 2
+  },
+  "reference": {
+    "n_rows_total": 400000,
+    "n_rows_used": 100000
+  },
+  "batches": [
+    {
+      "name": "sain",
+      "description": "Jeu de test réel : aucune dérive attendue.",
+      "simulated": false,
+      "n_rows": 100000,
+      "metrics": {
+        "f1_macro": 0.4454969705163303,
+        "accuracy": 0.63092,
+        "roc_auc_ovr_macro": 0.6752842028907637
+      },
+      "psi": {
+        "tenure_months": 0.0001420129520556303,
+        "avg_monthly_spend_ngn": 9.781713477316347e-05,
+        "recharge_frequency_per_month": 5.6382009845865785e-05,
+        "payment_consistency_score": 5.775105689366537e-05,
+        "late_payment_count": 0.00010016336131797658,
+        "operator": 1.8002845208314238e-05,
+        "account_type": 3.252624226333445e-05
+      },
+      "prediction_psi": 2.1577714528462755e-05,
+      "evidently": {
+        "drifted_share": 0.0,
+        "drifted_count": 0,
+        "per_column": {
+          "tenure_months": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.0034704148937300715,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "avg_monthly_spend_ngn": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.0035714093563024387,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "recharge_frequency_per_month": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.0044424809790708205,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "payment_consistency_score": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.003886343561554484,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "late_payment_count": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.0031805070714540644,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "operator": {
+            "method": "Jensen-Shannon distance",
+            "distance": 0.0015001178471008162,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "account_type": {
+            "method": "Jensen-Shannon distance",
+            "distance": 0.0020163714308677953,
+            "threshold": 0.1,
+            "drifted": false
+          }
+        },
+        "html": "reports\\monitoring\\sain.html"
+      },
+      "alerts": [],
+      "status": "ok",
+      "retrain": {
+        "recommended": false,
+        "reasons": [],
+        "investigate": false,
+        "investigate_reasons": [],
+        "automatic": false,
+        "note": "Recommandation seulement : un nouveau modèle doit être entraîné, comparé au modèle en production dans le registre, puis validé. Aucun remplacement automatique."
+      }
+    },
+    {
+      "name": "derive_donnees",
+      "description": "SIMULÉ à partir du jeu de test : dépenses moyennes x1,5 et fréquence de recharge x0,6.",
+      "simulated": true,
+      "n_rows": 100000,
+      "metrics": {
+        "f1_macro": 0.44211578291411113,
+        "accuracy": 0.622,
+        "roc_auc_ovr_macro": 0.673751007155977
+      },
+      "psi": {
+        "tenure_months": 0.0001420129520556303,
+        "avg_monthly_spend_ngn": 0.5425261388035006,
+        "recharge_frequency_per_month": 2.615811917352932,
+        "payment_consistency_score": 5.775105689366537e-05,
+        "late_payment_count": 0.00010016336131797658,
+        "operator": 1.8002845208314238e-05,
+        "account_type": 3.252624226333445e-05
+      },
+      "prediction_psi": 0.0063472663734417435,
+      "evidently": {
+        "drifted_share": 0.2857142857142857,
+        "drifted_count": 2,
+        "per_column": {
+          "tenure_months": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.0034704148937300715,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "avg_monthly_spend_ngn": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.878939725798577,
+            "threshold": 0.1,
+            "drifted": true
+          },
+          "recharge_frequency_per_month": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.7178479772693914,
+            "threshold": 0.1,
+            "drifted": true
+          },
+          "payment_consistency_score": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.003886343561554484,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "late_payment_count": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.0031805070714540644,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "operator": {
+            "method": "Jensen-Shannon distance",
+            "distance": 0.0015001178471008162,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "account_type": {
+            "method": "Jensen-Shannon distance",
+            "distance": 0.0020163714308677953,
+            "threshold": 0.1,
+            "drifted": false
+          }
+        },
+        "html": "reports\\monitoring\\derive_donnees.html"
+      },
+      "alerts": [
+        {
+          "level": "critical",
+          "kind": "data_drift",
+          "name": "avg_monthly_spend_ngn",
+          "value": 0.5425,
+          "threshold": 0.25,
+          "message": "PSI de avg_monthly_spend_ngn = 0.543"
+        },
+        {
+          "level": "critical",
+          "kind": "data_drift",
+          "name": "recharge_frequency_per_month",
+          "value": 2.6158,
+          "threshold": 0.25,
+          "message": "PSI de recharge_frequency_per_month = 2.616"
+        }
+      ],
+      "status": "critical",
+      "retrain": {
+        "recommended": false,
+        "reasons": [],
+        "investigate": true,
+        "investigate_reasons": [
+          "2 variables en dérive critique : avg_monthly_spend_ngn, recharge_frequency_per_month (performance non dégradée)"
+        ],
+        "automatic": false,
+        "note": "Recommandation seulement : un nouveau modèle doit être entraîné, comparé au modèle en production dans le registre, puis validé. Aucun remplacement automatique."
+      }
+    },
+    {
+      "name": "derive_concept",
+      "description": "SIMULÉ : 50% des étiquettes tirées au hasard (variables inchangées).",
+      "simulated": true,
+      "n_rows": 100000,
+      "metrics": {
+        "f1_macro": 0.3669007368054101,
+        "accuracy": 0.5402,
+        "roc_auc_ovr_macro": 0.5872663524779482
+      },
+      "psi": {
+        "tenure_months": 0.0001420129520556303,
+        "avg_monthly_spend_ngn": 9.781713477316347e-05,
+        "recharge_frequency_per_month": 5.6382009845865785e-05,
+        "payment_consistency_score": 5.775105689366537e-05,
+        "late_payment_count": 0.00010016336131797658,
+        "operator": 1.8002845208314238e-05,
+        "account_type": 3.252624226333445e-05
+      },
+      "prediction_psi": 2.1577714528462755e-05,
+      "evidently": {
+        "drifted_share": 0.0,
+        "drifted_count": 0,
+        "per_column": {
+          "tenure_months": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.0034704148937300715,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "avg_monthly_spend_ngn": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.0035714093563024387,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "recharge_frequency_per_month": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.0044424809790708205,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "payment_consistency_score": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.003886343561554484,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "late_payment_count": {
+            "method": "Wasserstein distance (normed)",
+            "distance": 0.0031805070714540644,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "operator": {
+            "method": "Jensen-Shannon distance",
+            "distance": 0.0015001178471008162,
+            "threshold": 0.1,
+            "drifted": false
+          },
+          "account_type": {
+            "method": "Jensen-Shannon distance",
+            "distance": 0.0020163714308677953,
+            "threshold": 0.1,
+            "drifted": false
+          }
+        },
+        "html": "reports\\monitoring\\derive_concept.html"
+      },
+      "alerts": [
+        {
+          "level": "critical",
+          "kind": "performance",
+          "name": "f1_macro",
+          "value": 0.0786,
+          "threshold": 0.05,
+          "message": "f1_macro : 0.3669 contre 0.4455 en production (baisse de 0.0786)"
+        },
+        {
+          "level": "critical",
+          "kind": "performance",
+          "name": "roc_auc_ovr_macro",
+          "value": 0.088,
+          "threshold": 0.05,
+          "message": "roc_auc_ovr_macro : 0.5873 contre 0.6753 en production (baisse de 0.0880)"
+        }
+      ],
+      "status": "critical",
+      "retrain": {
+        "recommended": true,
+        "reasons": [
+          "performance : f1_macro, roc_auc_ovr_macro"
+        ],
+        "investigate": false,
+        "investigate_reasons": [],
+        "automatic": false,
+        "note": "Recommandation seulement : un nouveau modèle doit être entraîné, comparé au modèle en production dans le registre, puis validé. Aucun remplacement automatique."
+      }
+    }
+  ]
+}

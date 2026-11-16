@@ -14,3 +14,5 @@ logs/
 __pycache__/
 *.pyc
 .env
+# Rapports Evidently HTML (4 Mo chacun, regeneres par la tache 10)
+reports/monitoring/*.html
