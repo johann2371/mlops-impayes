@@ -1,0 +1,5 @@
+outs:
+- md5: 4a2e876491f045d2b8349ed3941efc21
+  size: 50926326
+  hash: md5
+  path: telecom_credit_scoring_data.csv

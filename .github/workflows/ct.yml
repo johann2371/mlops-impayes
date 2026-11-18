@@ -1,0 +1,104 @@
+name: CT - Entrainement et validation
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [drift-detected]
+  schedule:
+    - cron: "0 3 * * 1"
+  pull_request:
+    paths:
+      - ".github/workflows/ct.yml"
+      - "src/models/**"
+      - "src/features/**"
+      - "src/data/**"
+      - "params.yaml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  data:
+    name: 1 - Donnees (telechargement et validation)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pandas pyyaml huggingface_hub
+      - name: Telecharger les donnees
+        run: python -m src.data.ingest
+      - name: Valider les donnees
+        run: python -m src.data.validate
+      - uses: actions/upload-artifact@v4
+        with:
+          name: data
+          path: data/raw/telecom_credit_scoring_data.csv
+          retention-days: 1
+
+  train:
+    name: 2 - Entrainement
+    needs: data
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: data
+          path: data/raw
+      - name: Entrainer le modele (jeu complet)
+        run: python -m src.models.train
+      - uses: actions/upload-artifact@v4
+        with:
+          name: model-files
+          path: |
+            models/
+            reports/metrics.json
+            reports/figures/confusion_matrix.png
+          retention-days: 1
+
+  validate-model:
+    name: 3 - Validation du modele
+    needs: train
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pyyaml
+      - uses: actions/download-artifact@v4
+        with:
+          name: model-files
+          path: .
+      - name: Valider le modele
+        run: python -m src.models.validate_model
+
+  publish:
+    name: 4 - Publication du modele valide
+    needs: validate-model
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: model-files
+          path: .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: model-${{ github.run_number }}
+          path: |
+            models/
+            reports/metrics.json
+            reports/figures/confusion_matrix.png
+          retention-days: 30
