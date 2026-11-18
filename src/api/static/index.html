@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test du modèle d'impayés</title>
+<style>
+:root{--red:#C8102E;--ink:#2B2F36;--g1:#F3F4F6;--g2:#D4D7DC;--g3:#8A9099;--g4:#5F6670}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:15px/1.5 "Segoe UI",system-ui,sans-serif}
+header{border-bottom:1px solid var(--g2)}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;padding:18px 0}
+h1{font:600 24px Georgia,serif;margin:0}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--g2);border-radius:99px;padding:4px 12px;font-size:12px;color:var(--g4)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--g3)}
+.pill.ok .dot{background:var(--ink)}
+.pill.ko{color:var(--red);border-color:var(--red)}
+.pill.ko .dot{background:var(--red)}
+main{padding:24px 0 48px}
+.lead{margin:0 0 22px;color:var(--g4);max-width:62ch}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.card{border:1px solid var(--g2);border-radius:10px;padding:22px}
+h2{font:600 17px Georgia,serif;margin:0 0 14px}
+.q{margin-bottom:18px}
+.q .top2{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.q label,.lab{font-weight:600;font-size:14px}
+.val{font-variant-numeric:tabular-nums;color:var(--red);font-weight:600;font-size:14px}
+.help{display:flex;justify-content:space-between;font-size:12px;color:var(--g3)}
+input[type=range]{width:100%;accent-color:var(--red);margin:6px 0 2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chips button{padding:7px 14px;border:1px solid var(--g2);border-radius:99px;background:#fff;color:var(--ink);font:inherit;cursor:pointer}
+.chips button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+button:focus-visible,input:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.ex{font-size:13px;color:var(--g4);margin:2px 0 18px}
+.ex button{background:none;border:0;color:var(--red);text-decoration:underline;font:inherit;cursor:pointer;padding:0 2px}
+.res{position:sticky;top:16px}
+.gauge{display:block;width:100%;max-width:320px;margin:0 auto}
+.arc{opacity:.4;transition:opacity .4s}
+.arc.act{opacity:1}
+#needle{transform-origin:150px 150px;transform:rotate(0deg);transition:transform .8s cubic-bezier(.3,1.3,.5,1)}
+.out{text-align:center}
+.out h3{font:600 24px Georgia,serif;margin:4px 0}
+.out h3.high{color:var(--red)}
+.out p{margin:0 auto;max-width:34ch;color:var(--g4)}
+.bars{display:grid;gap:8px;margin-top:16px}
+.bar{display:grid;grid-template-columns:52px 1fr 42px;gap:10px;align-items:center;font-size:13px}
+.track{height:8px;border-radius:4px;background:var(--g1);overflow:hidden}
+.fill{height:100%;transition:width .6s}
+.keep{margin-top:16px;width:100%;padding:10px;border:1px solid var(--ink);border-radius:6px;background:#fff;color:var(--ink);font:inherit;cursor:pointer}
+.keep:disabled{border-color:var(--g2);color:var(--g3);cursor:not-allowed}
+.kept{margin-top:24px}
+.kept ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.kept li{border:1px solid var(--g2);border-radius:8px;padding:12px;font-size:13px;color:var(--g4)}
+.kept li b{display:block;color:var(--ink);font-size:15px}
+.kept li b.high{color:var(--red)}
+.msg{color:var(--red);font-size:13px;min-height:20px;margin:10px 0 0;text-align:center}
+.ver{margin:10px 0 0;font-size:12px;color:var(--g3);text-align:center;word-break:break-all}
+.note{margin-top:24px;font-size:12px;color:var(--g3);max-width:72ch}
+@media(max-width:780px){.grid{grid-template-columns:1fr}.res{position:static}}
+@media(prefers-reduced-motion:reduce){#needle,.arc,.fill{transition:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap top">
+<h1>Test du modèle d'impayés</h1>
+<span class="pill" id="pill"><span class="dot"></span><span id="pill-t">Vérification du service…</span></span>
+</div></header>
+<main class="wrap">
+<p class="lead">Déplacez les curseurs pour décrire un client : l'estimation du risque se met à jour toute seule.</p>
+<div class="grid">
+<section class="card" aria-label="Profil du client">
+<h2>Profil du client</h2>
+<div class="q"><span class="lab" id="l-op">Opérateur</span><div class="chips" id="operator" role="group" aria-labelledby="l-op">
+<button type="button" data-v="MTN">MTN</button><button type="button" data-v="Airtel">Airtel</button><button type="button" data-v="Glo">Glo</button><button type="button" data-v="9mobile">9mobile</button></div></div>
+<div class="q"><span class="lab" id="l-ac">Type de compte</span><div class="chips" id="account_type" role="group" aria-labelledby="l-ac">
+<button type="button" data-v="prepaid">Prépayé</button><button type="button" data-v="postpaid">Postpayé</button></div></div>
+<div class="q"><div class="top2"><label for="tenure_months">Ancienneté</label><span class="val" id="v-tenure_months"></span></div>
+<input type="range" id="tenure_months" min="0" max="120" step="1"><div class="help"><span>Nouveau client</span><span>10 ans</span></div></div>
+<div class="q"><div class="top2"><label for="avg_monthly_spend_ngn">Dépense mensuelle</label><span class="val" id="v-avg_monthly_spend_ngn"></span></div>
+<input type="range" id="avg_monthly_spend_ngn" min="0" max="50000" step="500"><div class="help"><span>0</span><span>50 000 NGN</span></div></div>
+<div class="q"><div class="top2"><label for="recharge_frequency_per_month">Recharges</label><span class="val" id="v-recharge_frequency_per_month"></span></div>
+<input type="range" id="recharge_frequency_per_month" min="0" max="30" step="1"><div class="help"><span>Aucune</span><span>Une par jour</span></div></div>
+<div class="q"><div class="top2"><label for="payment_consistency_score">Régularité des paiements</label><span class="val" id="v-payment_consistency_score"></span></div>
+<input type="range" id="payment_consistency_score" min="0" max="100" step="5"><div class="help"><span>Jamais à l'heure</span><span>Toujours à l'heure</span></div></div>
+<div class="q"><div class="top2"><label for="late_payment_count">Retards de paiement</label><span class="val" id="v-late_payment_count"></span></div>
+<input type="range" id="late_payment_count" min="0" max="10" step="1"><div class="help"><span>Aucun</span><span>10 ou plus</span></div></div>
+<p class="ex">Exemples : <button type="button" data-ex="ok">client fiable</button> · <button type="button" data-ex="risk">client à risque</button> · <button type="button" data-ex="base">valeurs de départ</button></p>
+</section>
+<section class="card res" aria-live="polite" aria-label="Résultat">
+<h2>Estimation</h2>
+<svg class="gauge" viewBox="0 0 300 190" role="img" aria-label="Jauge de risque">
+<path class="arc" id="a-low" d="M40 150 A110 110 0 0 1 95 54.74" fill="none" stroke="#D4D7DC" stroke-width="26"/>
+<path class="arc" id="a-medium" d="M95 54.74 A110 110 0 0 1 205 54.74" fill="none" stroke="#8A9099" stroke-width="26"/>
+<path class="arc" id="a-high" d="M205 54.74 A110 110 0 0 1 260 150" fill="none" stroke="#C8102E" stroke-width="26"/>
+<g id="needle"><line x1="150" y1="150" x2="150" y2="62" stroke="#2B2F36" stroke-width="3" stroke-linecap="round"/></g>
+<circle cx="150" cy="150" r="9" fill="#fff" stroke="#2B2F36" stroke-width="3"/>
+<text x="40" y="180" text-anchor="middle" font-size="12" fill="#5F6670">Faible</text>
+<text x="150" y="180" text-anchor="middle" font-size="12" fill="#5F6670">Moyen</text>
+<text x="260" y="180" text-anchor="middle" font-size="12" fill="#5F6670">Élevé</text>
+</svg>
+<div class="out"><h3 id="r-title">Calcul en cours…</h3><p id="r-text"></p></div>
+<div class="bars" id="bars"></div>
+<p class="msg" id="msg" role="alert"></p>
+<button class="keep" id="keep" type="button" disabled>Garder cette simulation pour comparer</button>
+<p class="ver" id="ver"></p>
+</section>
+</div>
+<section class="kept" id="kept" hidden><h2>Simulations gardées</h2><ul id="list"></ul></section>
+<p class="note">Démonstration d'une chaîne MLOps : le modèle est entraîné sur des données synthétiques et reconnaît très mal la classe « moyen ». Ses résultats ne doivent pas servir à une vraie décision de crédit.</p>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const FIELDS = {
+  tenure_months: v => v + " mois",
+  avg_monthly_spend_ngn: v => Number(v).toLocaleString("fr-FR") + " NGN",
+  recharge_frequency_per_month: v => v + " par mois",
+  payment_consistency_score: v => v + " %",
+  late_payment_count: v => v + (v > 1 ? " retards" : " retard")
+};
+const BASE = {operator: "MTN", account_type: "prepaid", tenure_months: 36, avg_monthly_spend_ngn: 25000,
+  recharge_frequency_per_month: 15, payment_consistency_score: 55, late_payment_count: 2};
+const EX = {
+  base: BASE,
+  ok: {operator: "MTN", account_type: "postpaid", tenure_months: 100, avg_monthly_spend_ngn: 40000,
+    recharge_frequency_per_month: 25, payment_consistency_score: 95, late_payment_count: 0},
+  risk: {operator: "Glo", account_type: "prepaid", tenure_months: 3, avg_monthly_spend_ngn: 8000,
+    recharge_frequency_per_month: 4, payment_consistency_score: 10, late_payment_count: 8}
+};
+const LV = {
+  low: ["Risque faible", "Ce client devrait régler ses factures normalement.", "#D4D7DC"],
+  medium: ["Risque moyen", "Niveau intermédiaire : le modèle le reconnaît mal, restez prudent.", "#8A9099"],
+  high: ["Risque élevé", "Ce client a une forte probabilité d'impayé.", "#C8102E"]
+};
+const sel = {};
+let timer, seq = 0, last = null, kept = [];
+
+function setChip(id, v) {
+  sel[id] = v;
+  $(id).querySelectorAll("button").forEach(b => {
+    b.classList.toggle("on", b.dataset.v === v);
+    b.setAttribute("aria-pressed", b.dataset.v === v);
+  });
+}
+function label(k) { $("v-" + k).textContent = FIELDS[k]($(k).value); }
+function fill(d) {
+  setChip("operator", d.operator);
+  setChip("account_type", d.account_type);
+  Object.keys(FIELDS).forEach(k => { $(k).value = d[k]; label(k); });
+  schedule(0);
+}
+function profile() {
+  const p = {operator: sel.operator, account_type: sel.account_type};
+  Object.keys(FIELDS).forEach(k => { p[k] = Number($(k).value); });
+  return p;
+}
+function schedule(ms) { clearTimeout(timer); timer = setTimeout(predict, ms === undefined ? 300 : ms); }
+
+async function predict() {
+  const mine = ++seq, p = profile();
+  const body = Object.assign({}, p, {payment_consistency_score: p.payment_consistency_score / 100});
+  try {
+    const r = await fetch("/predict", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+    if (!r.ok) throw new Error("http");
+    const d = await r.json();
+    if (mine !== seq) return;
+    last = {p, d};
+    show(d);
+  } catch (_) {
+    if (mine === seq) $("msg").textContent = "Impossible d'obtenir une estimation : vérifiez que le service est lancé.";
+  }
+}
+function show(d) {
+  const pr = d.probabilities, score = (pr.medium || 0) * 0.5 + (pr.high || 0);
+  $("msg").textContent = "";
+  $("needle").style.transform = "rotate(" + (-90 + 180 * score) + "deg)";
+  document.querySelectorAll(".arc").forEach(a => a.classList.toggle("act", a.id === "a-" + d.prediction));
+  $("r-title").textContent = LV[d.prediction][0];
+  $("r-title").className = d.prediction;
+  $("r-text").textContent = LV[d.prediction][1];
+  $("bars").innerHTML = ["low", "medium", "high"].map(k => {
+    const pct = Math.round((pr[k] || 0) * 100);
+    return '<div class="bar"><span>' + LV[k][0].replace("Risque ", "") + '</span><div class="track"><div class="fill" style="width:' +
+      pct + "%;background:" + LV[k][2] + '"></div></div><span>' + pct + " %</span></div>";
+  }).join("");
+  $("ver").textContent = "Modèle utilisé : " + d.model_version;
+  $("keep").disabled = false;
+}
+function renderKept() {
+  $("kept").hidden = !kept.length;
+  $("list").innerHTML = kept.map(k => '<li><b class="' + k.d.prediction + '">' + LV[k.d.prediction][0] + "</b>" +
+    k.p.operator + ", " + (k.p.account_type === "prepaid" ? "prépayé" : "postpayé") + "<br>" +
+    FIELDS.tenure_months(k.p.tenure_months) + " · " + FIELDS.late_payment_count(k.p.late_payment_count) + "<br>" +
+    FIELDS.avg_monthly_spend_ngn(k.p.avg_monthly_spend_ngn) + "</li>").join("");
+}
+
+document.querySelectorAll(".chips").forEach(g => g.addEventListener("click", e => {
+  if (e.target.dataset.v) { setChip(g.id, e.target.dataset.v); schedule(); }
+}));
+Object.keys(FIELDS).forEach(k => $(k).addEventListener("input", () => { label(k); schedule(); }));
+document.querySelectorAll("[data-ex]").forEach(b => b.addEventListener("click", () => fill(EX[b.dataset.ex])));
+$("keep").addEventListener("click", () => {
+  if (!last) return;
+  kept.unshift(last);
+  kept = kept.slice(0, 4);
+  renderKept();
+});
+
+fetch("/health").then(r => r.json()).then(h => {
+  $("pill").className = "pill ok";
+  $("pill-t").textContent = "Service en ligne";
+}).catch(() => {
+  $("pill").className = "pill ko";
+  $("pill-t").textContent = "Service injoignable";
+});
+fill(BASE);
+</script>
+</body>
+</html>

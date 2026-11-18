@@ -32,3 +32,9 @@ def test_predict():
 def test_predict_invalid():
     r = client.post("/predict", json={"tenure_months": -1})
     assert r.status_code == 422
+
+
+def test_home_page():
+    r = client.get("/")
+    assert r.status_code == 200
+    assert "Test du modèle" in r.text

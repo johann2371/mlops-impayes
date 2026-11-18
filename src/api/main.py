@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import numpy as np
 import pandas as pd
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 
 from src.api.schemas import PredictionRequest, PredictionResponse
 from src.config import ROOT, params
@@ -12,6 +13,7 @@ from src.config import ROOT, params
 app = FastAPI(title="API de prédiction du risque d'impayé", version="0.1.0")
 
 LOG_PATH = ROOT / params["api"]["log_path"]
+PAGE_PATH = ROOT / "src" / "api" / "static" / "index.html"
 
 # Le vrai modèle peut prédire des codes (0, 1, 2), l'API renvoie des libellés.
 LABELS = {0: "low", 1: "medium", 2: "high"}
@@ -68,6 +70,11 @@ def log_prediction(entry: dict) -> None:
     LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(LOG_PATH, "a", encoding="utf-8") as f:
         f.write(json.dumps(entry) + "\n")
+
+
+@app.get("/", include_in_schema=False)
+def home():
+    return FileResponse(PAGE_PATH)
 
 
 @app.get("/health")
